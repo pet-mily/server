@@ -26,6 +26,11 @@ export class AuthService {
       provider,
       profile.id,
     );
+
+    const accessToken = await this.createAccessToken(user.id);
+    return {
+      accessToken,
+    };
   }
 
   async signup({

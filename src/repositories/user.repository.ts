@@ -19,6 +19,7 @@ export class UserRepository {
     if (!user) {
       throw new HttpException('User not found', 404);
     }
+    return user;
   }
 
   async createUser(provider: string, providerId: string) {
