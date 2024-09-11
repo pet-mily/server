@@ -1,4 +1,4 @@
-import { IsString, IsEnum } from 'class-validator';
+import { IsString, IsEnum, IsNotEmpty } from 'class-validator';
 import { Transform } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
 
@@ -9,6 +9,7 @@ export class LoginDto {
   readonly provider: 'KAKAO' | 'NAVER';
 
   @ApiProperty()
+  @IsNotEmpty()
   @IsString()
   readonly providerAccessToken: string;
 }

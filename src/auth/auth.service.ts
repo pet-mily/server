@@ -62,7 +62,6 @@ export class AuthService {
       },
     });
     const data = await result.json();
-    console.log(data);
 
     return {
       id: String(data.id),
