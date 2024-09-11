@@ -17,7 +17,6 @@ async function bootstrap() {
     .setDescription('PetMily API description')
     .setVersion('1.0')
     .addBearerAuth()
-    .addTag('PetMily')
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
