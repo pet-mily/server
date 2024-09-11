@@ -1,8 +1,23 @@
-import { Controller, Post, Body, HttpCode } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  HttpCode,
+  Get,
+  UseGuards,
+} from '@nestjs/common';
 import { LoginDto } from './dto/request';
 import { LoginResponseDto } from './dto/response';
 import { AuthService } from './auth.service';
-import { ApiTags, ApiOperation, ApiResponse, ApiBody } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiBody,
+  ApiBearerAuth,
+} from '@nestjs/swagger';
+import { JwtGuard } from 'src/common/guards';
+import { CurrentUser } from 'src/common/decorators';
 
 @ApiTags('Auth')
 @ApiResponse({ status: 400, description: '유효성 검사 실패' })
@@ -27,7 +42,7 @@ export class AuthController {
   @ApiOperation({ summary: '회원가입' })
   @ApiBody({ type: LoginDto })
   @ApiResponse({
-    status: 200,
+    status: 201,
     description: '회원가입 성공',
     type: LoginResponseDto,
   })
@@ -35,5 +50,12 @@ export class AuthController {
   @Post('signup')
   async signup(@Body() loginDto: LoginDto): Promise<LoginResponseDto> {
     return await this.authService.signup(loginDto);
+  }
+
+  @ApiBearerAuth()
+  @UseGuards(JwtGuard)
+  @Get('test')
+  test(@CurrentUser() id: string) {
+    console.log(id);
   }
 }
