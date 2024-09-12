@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, HttpException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UserRepository } from 'src/repositories/user.repository';
 import { ConfigService } from '@nestjs/config';
@@ -103,5 +103,22 @@ export class AuthService {
 
     await this.userRepository.saveRefreshToken(userId, refreshToken);
     return refreshToken;
+  }
+
+  async refresh(userId: string, refreshToken: string) {
+    const currentRefreshToken =
+      await this.userRepository.findRefreshToken(userId);
+
+    if (currentRefreshToken !== refreshToken) {
+      throw new HttpException('Invalid refresh token', 401);
+    }
+
+    const newAccessToken = await this.createAccessToken(userId);
+    const newRefreshToken = await this.createRefreshToken(userId);
+
+    return {
+      accessToken: newAccessToken,
+      refreshToken: newRefreshToken,
+    };
   }
 }

@@ -6,7 +6,9 @@ import {
   Get,
   UseGuards,
   Patch,
+  Req,
 } from '@nestjs/common';
+import { Request } from 'express';
 import { LoginDto } from './dto/request';
 import { LoginResponseDto } from './dto/response';
 import { AuthService } from './auth.service';
@@ -56,8 +58,9 @@ export class AuthController {
   @ApiBearerAuth()
   @UseGuards(RefreshGuard)
   @Patch('refresh')
-  async refresh(@CurrentUser() id: string) {
-    console.log(id);
+  async refresh(@CurrentUser() id: string, @Req() req: Request) {
+    const refreshToken = req.headers.authorization!.split(' ')[1];
+    return await this.authService.refresh(id, refreshToken);
   }
 
   @ApiBearerAuth()

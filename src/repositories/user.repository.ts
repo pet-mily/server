@@ -51,4 +51,17 @@ export class UserRepository {
     });
     return;
   }
+
+  async findRefreshToken(userId: string) {
+    const user = await this.prisma.user.findUniqueOrThrow({
+      where: {
+        id: userId,
+      },
+      select: {
+        refreshToken: true,
+      },
+    });
+
+    return user.refreshToken;
+  }
 }
