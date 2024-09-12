@@ -39,4 +39,16 @@ export class UserRepository {
       } else throw e;
     }
   }
+
+  async saveRefreshToken(userId: string, refreshToken: string) {
+    await this.prisma.user.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        refreshToken,
+      },
+    });
+    return;
+  }
 }

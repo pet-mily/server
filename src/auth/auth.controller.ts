@@ -5,6 +5,7 @@ import {
   HttpCode,
   Get,
   UseGuards,
+  Patch,
 } from '@nestjs/common';
 import { LoginDto } from './dto/request';
 import { LoginResponseDto } from './dto/response';
@@ -16,7 +17,7 @@ import {
   ApiBody,
   ApiBearerAuth,
 } from '@nestjs/swagger';
-import { JwtGuard } from 'src/common/guards';
+import { JwtGuard, RefreshGuard } from 'src/common/guards';
 import { CurrentUser } from 'src/common/decorators';
 
 @ApiTags('Auth')
@@ -50,6 +51,13 @@ export class AuthController {
   @Post('signup')
   async signup(@Body() loginDto: LoginDto): Promise<LoginResponseDto> {
     return await this.authService.signup(loginDto);
+  }
+
+  @ApiBearerAuth()
+  @UseGuards(RefreshGuard)
+  @Patch('refresh')
+  async refresh(@CurrentUser() id: string) {
+    console.log(id);
   }
 
   @ApiBearerAuth()

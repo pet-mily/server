@@ -1,12 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UserRepository } from 'src/repositories/user.repository';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly userRepository: UserRepository,
     private readonly jwtService: JwtService,
+    private readonly configService: ConfigService,
   ) {}
   async login({
     provider,
@@ -28,8 +30,11 @@ export class AuthService {
     );
 
     const accessToken = await this.createAccessToken(user.id);
+    const refreshToken = await this.createRefreshToken(user.id);
+
     return {
       accessToken,
+      refreshToken,
     };
   }
 
@@ -49,9 +54,11 @@ export class AuthService {
 
     const user = await this.userRepository.createUser(provider, profile.id);
     const accessToken = await this.createAccessToken(user.id);
+    const refreshToken = await this.createRefreshToken(user.id);
 
     return {
       accessToken,
+      refreshToken,
     };
   }
 
@@ -83,5 +90,18 @@ export class AuthService {
 
   async createAccessToken(userId: string) {
     return this.jwtService.sign({ id: userId });
+  }
+
+  async createRefreshToken(userId: string) {
+    const refreshToken = this.jwtService.sign(
+      { id: userId },
+      {
+        secret: this.configService.get('JWT_REFRESH_SECRET'),
+        expiresIn: this.configService.get('JWT_REFRESH_EXPIRES_IN'),
+      },
+    );
+
+    await this.userRepository.saveRefreshToken(userId, refreshToken);
+    return refreshToken;
   }
 }

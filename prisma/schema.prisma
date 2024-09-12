@@ -8,11 +8,12 @@ datasource db {
 }
 
 model User {
-  id         String   @id @default(uuid())
-  email      String?
-  provider   String
-  providerId String
-  createdAt  DateTime @default(now())
+  id           String   @id @default(uuid())
+  email        String?
+  provider     String
+  providerId   String
+  createdAt    DateTime @default(now())
+  refreshToken String?
 
   @@unique([provider, providerId])
 }
