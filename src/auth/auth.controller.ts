@@ -18,6 +18,7 @@ import {
   ApiResponse,
   ApiBody,
   ApiBearerAuth,
+  ApiHeader,
 } from '@nestjs/swagger';
 import { JwtGuard, RefreshGuard } from 'src/common/guards';
 import { CurrentUser } from 'src/common/decorators';
@@ -55,10 +56,25 @@ export class AuthController {
     return await this.authService.signup(loginDto);
   }
 
+  @ApiOperation({ summary: '토큰 갱신' })
+  @ApiResponse({
+    status: 200,
+    description: '새로운 accessToken, refreshToken을 반환해서 드립니다',
+    type: LoginResponseDto,
+  })
+  @ApiResponse({ status: 401, description: '토큰 유효하지 않음' })
+  @ApiHeader({
+    name: 'Authorization',
+    description:
+      '여기도 다른 헤더와 같이 Authorization: Bearer 이지만 accessToken이 아니라 refreshToken을 넣어주셔야 합니다',
+  })
   @ApiBearerAuth()
   @UseGuards(RefreshGuard)
   @Patch('refresh')
-  async refresh(@CurrentUser() id: string, @Req() req: Request) {
+  async refresh(
+    @CurrentUser() id: string,
+    @Req() req: Request,
+  ): Promise<LoginResponseDto> {
     const refreshToken = req.headers.authorization!.split(' ')[1];
     return await this.authService.refresh(id, refreshToken);
   }
