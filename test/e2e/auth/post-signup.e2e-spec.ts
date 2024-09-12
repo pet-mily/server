@@ -5,7 +5,7 @@ import { AppModule } from 'src/app.module';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { AuthService } from 'src/auth/auth.service';
 
-describe('POST /auth/signup', () => {
+describe('POST /auth/signup - 회원가입', () => {
   let app: INestApplication;
   let prisma: PrismaService;
   let authService: AuthService;

@@ -5,7 +5,7 @@ import { AppModule } from 'src/app.module';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { AuthService } from 'src/auth/auth.service';
 
-describe('PATCH /auth/refresh', () => {
+describe('PATCH /auth/refresh - 토큰 재발급', () => {
   let app: INestApplication;
   let prisma: PrismaService;
   let authService: AuthService;

@@ -5,7 +5,7 @@ import { AppModule } from 'src/app.module';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { AuthService } from 'src/auth/auth.service';
 import { PetService } from 'src/providers/pet.service';
-import { login } from '../helpers';
+import { signup } from '../helpers';
 import * as fs from 'fs';
 import * as path from 'path';
 import {
@@ -14,7 +14,7 @@ import {
   DeleteObjectCommand,
 } from '@aws-sdk/client-s3';
 
-describe('POST /pets', () => {
+describe('POST /pets - 반려동물 등록', () => {
   let app: INestApplication;
   let prisma: PrismaService;
   let authService: AuthService;
@@ -44,7 +44,7 @@ describe('POST /pets', () => {
 
   it('이미지가 없을때 400을 반환한다', async () => {
     // given
-    const { accessToken } = await login(app);
+    const { accessToken } = await signup(app);
 
     // when
     const { status } = await request(app.getHttpServer())
@@ -65,7 +65,7 @@ describe('POST /pets', () => {
 
   it('type이 DOG나 CAT이 아닐때 400을 반환한다', async () => {
     // given
-    const { accessToken } = await login(app);
+    const { accessToken } = await signup(app);
     const filePath = path.join(__dirname, 'test.png');
     fs.writeFileSync(filePath, 'test-png');
 
@@ -90,7 +90,7 @@ describe('POST /pets', () => {
 
   it('name이 없을때 400을 반환한다', async () => {
     // given
-    const { accessToken } = await login(app);
+    const { accessToken } = await signup(app);
     const filePath = path.join(__dirname, 'test.png');
     fs.writeFileSync(filePath, 'test-png');
 
@@ -126,7 +126,7 @@ describe('POST /pets', () => {
 
   it('birthday가 날짜 형식이 아닐때 400을 반환한다', async () => {
     // given
-    const { accessToken } = await login(app);
+    const { accessToken } = await signup(app);
     const filePath = path.join(__dirname, 'test.png');
     fs.writeFileSync(filePath, 'test-png');
 
@@ -151,7 +151,7 @@ describe('POST /pets', () => {
 
   it('heartwormPrevention이 boolean 형식이 아닐때 400을 반환한다', async () => {
     // given
-    const { accessToken } = await login(app);
+    const { accessToken } = await signup(app);
     const filePath = path.join(__dirname, 'test.png');
     fs.writeFileSync(filePath, 'test-png');
 
@@ -176,7 +176,7 @@ describe('POST /pets', () => {
 
   it('description은 공백이어도 201을 반환한다', async () => {
     // given
-    const { accessToken } = await login(app);
+    const { accessToken } = await signup(app);
     const filePath = path.join(__dirname, 'test.png');
     fs.writeFileSync(filePath, 'test-png');
     const spy = jest.spyOn(petService, 'create').mockResolvedValue();
@@ -203,7 +203,7 @@ describe('POST /pets', () => {
 
   it('정상적인 요청일때 201을 반환한다', async () => {
     // given
-    const { accessToken } = await login(app);
+    const { accessToken } = await signup(app);
     const filePath = path.join(__dirname, 'test.png');
     fs.writeFileSync(filePath, 'test-png');
 

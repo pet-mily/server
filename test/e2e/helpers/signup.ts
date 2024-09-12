@@ -1,7 +1,7 @@
 import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
 
-export const login = async (app: INestApplication) => {
+export const signup = async (app: INestApplication) => {
   const signupDto = {
     provider: 'KAKAO',
     providerAccessToken: 'test-oauth-token',
