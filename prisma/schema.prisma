@@ -15,5 +15,20 @@ model User {
   createdAt    DateTime @default(now())
   refreshToken String?
 
+  pets Pet[]
+
   @@unique([provider, providerId])
+}
+
+model Pet {
+  id                  String   @id @default(uuid())
+  name                String
+  type                String
+  breed               String
+  birthday            DateTime @db.Date
+  heartwormPrevention Boolean
+  description         String
+
+  ownerId String
+  owner   User   @relation(fields: [ownerId], references: [id])
 }
