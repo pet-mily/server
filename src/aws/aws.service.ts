@@ -12,7 +12,7 @@ export class AwsService {
   async uploadPetImage(petId: string, image: Express.Multer.File) {
     const command = new PutObjectCommand({
       Bucket: this.configService.get('AWS_BUCKET_NAME'),
-      Key: `pets/${petId}.${image.filename.split('.').pop()}`,
+      Key: `pets/${petId}.${image.originalname.split('.').pop()}`,
       Body: image.buffer,
       ContentType: image.mimetype,
     });

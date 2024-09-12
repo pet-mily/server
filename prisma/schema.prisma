@@ -28,6 +28,7 @@ model Pet {
   birthday            DateTime @db.Date
   heartwormPrevention Boolean
   description         String
+  imageExt            String
 
   ownerId String
   owner   User   @relation(fields: [ownerId], references: [id])

@@ -28,12 +28,14 @@ export class PetController {
     @UploadedFile() image: Express.Multer.File,
     @CurrentUser() userId: number,
   ) {
-    console.log('aa');
-    console.log(createPetDto);
     if (!image) {
       throw new HttpException('Bad Request', 400);
     }
 
-    console.log(createPetDto, image, userId);
+    await this.petService.create(userId.toString(), {
+      ...createPetDto,
+      image,
+    });
+    return;
   }
 }
