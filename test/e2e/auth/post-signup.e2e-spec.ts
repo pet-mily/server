@@ -76,7 +76,7 @@ describe('POST /auth/signup', () => {
     expect(status).toBe(409);
   });
 
-  it('정상적으로 유저가 없는 경우 201과 함께 accessToken을 반환하고 데이터베이스에 유저가 생성된다', async () => {
+  it('정상적으로 유저가 없는 경우 201과 함께 accessToken, refreshToken을 반환하고 데이터베이스에 유저가 생성된다', async () => {
     // given
     jest.spyOn(authService, 'getKakaoProfile').mockResolvedValue({
       id: 'test-provider-id',
@@ -93,6 +93,7 @@ describe('POST /auth/signup', () => {
     // then
     expect(status).toBe(201);
     expect(body.accessToken).toBeDefined();
+    expect(body.refreshToken).toBeDefined();
     const user = await prisma.user.findFirst();
     expect(user?.providerId).toBe('test-provider-id');
   });

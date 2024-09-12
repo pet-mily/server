@@ -65,7 +65,7 @@ describe('POST /auth/login', () => {
     expect(status).toBe(404);
   });
 
-  it('정상적으로 유저가 있는 경우 200과 함께 accessToken을 반환한다', async () => {
+  it('정상적으로 유저가 있는 경우 200과 함께 accessToken, refreshToken을 반환한다', async () => {
     // given
     jest.spyOn(authService, 'getKakaoProfile').mockResolvedValue({
       id: 'test-id',
@@ -89,5 +89,6 @@ describe('POST /auth/login', () => {
     // then
     expect(status).toBe(200);
     expect(body.accessToken).toBeDefined();
+    expect(body.refreshToken).toBeDefined();
   });
 });
