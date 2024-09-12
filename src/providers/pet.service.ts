@@ -34,4 +34,17 @@ export class PetService {
     await this.awsService.uploadPetImage(petId, image);
     return;
   }
+
+  async getManyByUserId(userId: string) {
+    const pets = await this.petRepository.findManyByOnwerId(userId);
+
+    return pets.map((pet) => {
+      return {
+        id: pet.id,
+        name: pet.name,
+        type: pet.type,
+        image: this.awsService.getPetImageUrl(pet.id, pet.imageExt),
+      };
+    });
+  }
 }

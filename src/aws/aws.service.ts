@@ -19,4 +19,8 @@ export class AwsService {
 
     return this.s3Client.send(command);
   }
+
+  getPetImageUrl(petId: string, imageExt: string) {
+    return `${this.configService.get('AWS_CLOUDFRONT_URL')}/pets/${petId}.${imageExt}`;
+  }
 }

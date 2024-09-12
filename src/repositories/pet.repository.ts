@@ -27,4 +27,18 @@ export class PetRepository {
       },
     });
   }
+
+  async findManyByOnwerId(ownerId: string) {
+    return this.prisma.pet.findMany({
+      where: {
+        ownerId,
+      },
+      select: {
+        id: true,
+        name: true,
+        type: true,
+        imageExt: true,
+      },
+    });
+  }
 }
