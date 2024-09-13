@@ -29,7 +29,7 @@ export class CreatePetDto {
   @IsDate()
   birthday: Date;
 
-  @ApiProperty()
+  @ApiProperty({ description: '심장사상충 접종 여부 - true or false' })
   @Transform(({ obj, key }) => {
     return obj[key] === 'true' ? true : obj[key] === 'false' ? false : obj[key];
   })

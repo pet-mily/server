@@ -47,4 +47,13 @@ export class PetService {
       };
     });
   }
+
+  async getOneById(petId: string) {
+    const { imageExt, ...rest } = await this.petRepository.findOneById(petId);
+
+    return {
+      ...rest,
+      image: this.awsService.getPetImageUrl(petId, imageExt),
+    };
+  }
 }

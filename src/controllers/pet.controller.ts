@@ -7,6 +7,7 @@ import {
   UploadedFile,
   HttpException,
   Get,
+  Param,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -15,11 +16,12 @@ import {
   ApiOperation,
   ApiBody,
   ApiConsumes,
+  ApiParam,
 } from '@nestjs/swagger';
 import { PetService } from 'src/providers/pet.service';
 import { JwtGuard } from 'src/common/guards';
 import { CreatePetDto } from './dto/pet/request';
-import { FindManyPetDto } from './dto/pet/response';
+import { FindManyPetDto, GetPetDetailDto } from './dto/pet/response';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { CurrentUser } from 'src/common/decorators';
 
@@ -70,5 +72,17 @@ export class PetController {
   @Get()
   async findManyByUserId(@CurrentUser() id: string): Promise<FindManyPetDto[]> {
     return this.petService.getManyByUserId(id);
+  }
+
+  @ApiOperation({ summary: '반려동물 상세 조회' })
+  @ApiParam({ name: 'id', description: '반려동물 id' })
+  @ApiResponse({
+    status: 200,
+    description: '반려동물 상세 조회 성공',
+    type: GetPetDetailDto,
+  })
+  @Get(':id')
+  async findOneById(@Param('id') petId: string): Promise<GetPetDetailDto> {
+    return await this.petService.getOneById(petId);
   }
 }
