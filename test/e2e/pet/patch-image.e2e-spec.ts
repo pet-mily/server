@@ -40,7 +40,7 @@ describe('PATCH /pets/:petId/image - 반려동물 이미지 수정', () => {
     await prisma.user.deleteMany();
   });
 
-  it('204를 반환하며 기존 이미지를 삭제하고, 새로운 이미지를 등록한다', async () => {
+  it('200를 반환하며 기존 이미지를 삭제하고, 새로운 이미지를 등록한다', async () => {
     // given
     const { accessToken } = await signup(app);
     const user = await prisma.user.findFirst();
@@ -69,13 +69,14 @@ describe('PATCH /pets/:petId/image - 반려동물 이미지 수정', () => {
     fs.writeFileSync(filePath, 'test-png');
 
     // when
-    const { status } = await request(app.getHttpServer())
+    const { status, body } = await request(app.getHttpServer())
       .patch(`/pets/${pet.id}/image`)
       .set('Authorization', `Bearer ${accessToken}`)
       .attach('image', filePath);
 
     // then
-    expect(status).toBe(204);
+    expect(status).toBe(200);
+    expect(body.image).toContain('https');
     const updatedPet = await prisma.pet.findUnique({
       where: {
         id: pet.id,

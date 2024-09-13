@@ -9,7 +9,6 @@ import {
   Get,
   Param,
   Patch,
-  HttpCode,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -23,7 +22,11 @@ import {
 import { PetService } from 'src/providers/pet.service';
 import { JwtGuard } from 'src/common/guards';
 import { CreatePetDto, UpdatePetImageDto } from './dto/pet/request';
-import { FindManyPetDto, GetPetDetailDto } from './dto/pet/response';
+import {
+  FindManyPetDto,
+  GetPetDetailDto,
+  UpdatePetImageResponseDto,
+} from './dto/pet/response';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { CurrentUser } from 'src/common/decorators';
 
@@ -97,21 +100,20 @@ export class PetController {
     description: '반려동물 이미지 수정',
   })
   @ApiResponse({
-    status: 204,
-    description: '반려동물 이미지 수정 성공 - 따로 응답 body는 없습니다.',
+    status: 200,
+    description: '반려동물 이미지 수정 성공',
+    type: UpdatePetImageResponseDto,
   })
   @Patch(':id/image')
-  @HttpCode(204)
   @UseInterceptors(FileInterceptor('image'))
   async updateImage(
     @Param('id') petId: string,
     @UploadedFile() image: Express.Multer.File,
-  ) {
+  ): Promise<UpdatePetImageResponseDto> {
     if (!image) {
       throw new HttpException('Bad Request', 400);
     }
 
-    await this.petService.updateImage(petId, image);
-    return;
+    return await this.petService.updateImage(petId, image);
   }
 }

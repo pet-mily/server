@@ -70,6 +70,8 @@ export class PetService {
       beforeImageKey: beforeImageKey!,
       afterImageKey: imageKey,
     });
-    return;
+    return {
+      image: imageUrl,
+    };
   }
 }
