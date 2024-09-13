@@ -10,10 +10,14 @@ import { AwsModule } from 'src/aws/aws.module';
     AwsModule,
     MulterModule.register({
       fileFilter: (req, file, cb) => {
+        console.log(file);
         file.originalname = Buffer.from(file.originalname, 'latin1').toString(
           'utf8',
         );
         cb(null, true);
+      },
+      limits: {
+        fieldSize: 10 * 1024 * 1024,
       },
     }),
   ],
