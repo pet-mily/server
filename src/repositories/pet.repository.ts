@@ -100,7 +100,6 @@ export class PetRepository {
         heartwormPrevention: updateInput.heartwormPrevention,
         description: updateInput.description,
       },
-      select: {},
     });
 
     return;

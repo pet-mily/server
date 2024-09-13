@@ -45,7 +45,12 @@ export class PetService {
   }
 
   async getOneById(petId: string) {
-    return await this.petRepository.findOneById(petId);
+    const pet = await this.petRepository.findOneById(petId);
+
+    return {
+      ...pet,
+      birthday: pet.birthday.toISOString().split('T')[0],
+    };
   }
 
   async updateImage(petId: string, image: Express.Multer.File) {

@@ -74,7 +74,7 @@ describe('GET /pets/:petId - 반려동물 상세 조회', () => {
       type: 'DOG',
       name: '멍멍이',
       breed: '푸들',
-      birthday: '2021-01-01T00:00:00.000Z',
+      birthday: '2021-01-01',
       heartwormPrevention: true,
       description: '테스트용 멍멍이',
       image: `https://test.com/image1.jpg`,

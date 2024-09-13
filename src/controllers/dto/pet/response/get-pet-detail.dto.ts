@@ -13,8 +13,8 @@ export class GetPetDetailDto {
   @ApiProperty()
   breed: string;
 
-  @ApiProperty()
-  birthday: Date;
+  @ApiProperty({ description: '생일 YYYY-MM-DD', example: '2021-01-01' })
+  birthday: string;
 
   @ApiProperty({ description: '심장사상충 접종 여부 - true or false' })
   heartwormPrevention: boolean;
