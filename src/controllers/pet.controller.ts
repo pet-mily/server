@@ -81,6 +81,7 @@ export class PetController {
     description: '반려동물 상세 조회 성공',
     type: GetPetDetailDto,
   })
+  @ApiResponse({ status: 404, description: '반려동물 없음' })
   @Get(':id')
   async findOneById(@Param('id') petId: string): Promise<GetPetDetailDto> {
     return await this.petService.getOneById(petId);
