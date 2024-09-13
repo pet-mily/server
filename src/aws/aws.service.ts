@@ -21,7 +21,7 @@ export class AwsService {
       ContentType: image.mimetype,
     });
 
-    return this.s3Client.send(command);
+    return await this.s3Client.send(command);
   }
 
   getPetImageUrl(key: string) {
@@ -34,7 +34,7 @@ export class AwsService {
       Key: `pets/${key}`,
     });
 
-    return this.s3Client.send(command);
+    return await this.s3Client.send(command);
   }
 
   async updatePetImage({
@@ -46,8 +46,8 @@ export class AwsService {
     beforeImageKey: string;
     afterImageKey: string;
   }) {
-    this.deletePetImage(beforeImageKey);
-    this.uploadPetImage(image, afterImageKey);
+    await this.deletePetImage(beforeImageKey);
+    await this.uploadPetImage(image, afterImageKey);
     return;
   }
 }
