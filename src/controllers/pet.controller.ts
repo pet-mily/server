@@ -11,6 +11,7 @@ import {
   Patch,
   Put,
   HttpCode,
+  Delete,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -145,6 +146,19 @@ export class PetController {
       petId,
       userId,
     });
+    return;
+  }
+
+  @ApiOperation({ summary: '반려동물 삭제' })
+  @ApiParam({ name: 'id', description: '반려동물 id' })
+  @ApiResponse({
+    status: 204,
+    description: '반려동물 삭제 성공 - 따로 응답 body는 없습니다.',
+  })
+  @HttpCode(204)
+  @Delete(':id')
+  async delete(@Param('id') petId: string, @CurrentUser() userId: string) {
+    await this.petService.deleteOne(petId, userId);
     return;
   }
 }

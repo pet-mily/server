@@ -84,6 +84,13 @@ export class PetService {
     await this.petRepository.update(updateInput);
     return;
   }
+
+  async deleteOne(petId: string, userId: string) {
+    const image = await this.petRepository.deleteOne(petId, userId);
+    const imageKey = image.split('/').pop();
+    await this.awsService.deletePetImage(imageKey!);
+    return;
+  }
 }
 
 export interface UpdateInput {

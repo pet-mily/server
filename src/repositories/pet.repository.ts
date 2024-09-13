@@ -104,6 +104,19 @@ export class PetRepository {
 
     return;
   }
+
+  async deleteOne(petId: string, userId: string) {
+    const { image } = await this.prisma.pet.delete({
+      where: {
+        id: petId,
+        ownerId: userId,
+      },
+      select: {
+        image: true,
+      },
+    });
+    return image;
+  }
 }
 
 export interface UpdateInput {
