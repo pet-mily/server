@@ -85,4 +85,35 @@ export class PetRepository {
     ]);
     return beforePet.image;
   }
+
+  async update(updateInput: UpdateInput) {
+    await this.prisma.pet.update({
+      where: {
+        id: updateInput.petId,
+        ownerId: updateInput.userId,
+      },
+      data: {
+        type: updateInput.type,
+        name: updateInput.name,
+        breed: updateInput.breed,
+        birthday: updateInput.birthday,
+        heartwormPrevention: updateInput.heartwormPrevention,
+        description: updateInput.description,
+      },
+      select: {},
+    });
+
+    return;
+  }
+}
+
+export interface UpdateInput {
+  userId: string;
+  petId: string;
+  type: 'CAT' | 'DOG';
+  name: string;
+  breed: string;
+  birthday: Date;
+  heartwormPrevention: boolean;
+  description: string;
 }

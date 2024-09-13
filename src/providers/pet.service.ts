@@ -74,4 +74,20 @@ export class PetService {
       image: imageUrl,
     };
   }
+
+  async update(updateInput: UpdateInput) {
+    await this.petRepository.update(updateInput);
+    return;
+  }
+}
+
+export interface UpdateInput {
+  userId: string;
+  petId: string;
+  type: 'CAT' | 'DOG';
+  name: string;
+  breed: string;
+  birthday: Date;
+  heartwormPrevention: boolean;
+  description: string;
 }

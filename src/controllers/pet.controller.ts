@@ -9,6 +9,8 @@ import {
   Get,
   Param,
   Patch,
+  Put,
+  HttpCode,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -21,7 +23,11 @@ import {
 } from '@nestjs/swagger';
 import { PetService } from 'src/providers/pet.service';
 import { JwtGuard } from 'src/common/guards';
-import { CreatePetDto, UpdatePetImageDto } from './dto/pet/request';
+import {
+  CreatePetDto,
+  UpdatePetImageDto,
+  UpdatePetDto,
+} from './dto/pet/request';
 import {
   FindManyPetDto,
   GetPetDetailDto,
@@ -115,5 +121,30 @@ export class PetController {
     }
 
     return await this.petService.updateImage(petId, image);
+  }
+
+  @ApiOperation({ summary: '반려동물 정보 수정' })
+  @ApiParam({ name: 'id', description: '반려동물 id' })
+  @ApiBody({
+    type: UpdatePetDto,
+    description: '반려동물 정보 수정',
+  })
+  @ApiResponse({
+    status: 204,
+    description: '반려동물 정보 수정 성공 - 따로 응답 body는 없습니다.',
+  })
+  @HttpCode(204)
+  @Put(':id')
+  async update(
+    @Param('id') petId: string,
+    @Body() updatePetDto: UpdatePetDto,
+    @CurrentUser() userId: string,
+  ) {
+    await this.petService.update({
+      ...updatePetDto,
+      petId,
+      userId,
+    });
+    return;
   }
 }
