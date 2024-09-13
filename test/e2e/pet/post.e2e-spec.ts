@@ -227,7 +227,7 @@ describe('POST /pets - 반려동물 등록', () => {
     const response = await s3Client.send(
       new HeadObjectCommand({
         Bucket: process.env.AWS_BUCKET_NAME,
-        Key: `pets/${pet!.id}.${pet!.imageExt}`,
+        Key: `pets/${pet!.image.split('/').pop()}`,
       }),
     );
     expect(response.$metadata.httpStatusCode).toEqual(200);
@@ -237,7 +237,7 @@ describe('POST /pets - 반려동물 등록', () => {
     await s3Client.send(
       new DeleteObjectCommand({
         Bucket: process.env.AWS_BUCKET_NAME,
-        Key: `pets/${pet!.id}.${pet!.imageExt}`,
+        Key: `pets/${pet!.image.split('/').pop()}`,
       }),
     );
   });

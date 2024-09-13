@@ -1,5 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
+import {
+  S3Client,
+  PutObjectCommand,
+  DeleteObjectCommand,
+} from '@aws-sdk/client-s3';
 import { ConfigService } from '@nestjs/config';
 
 @Injectable()
@@ -9,10 +13,10 @@ export class AwsService {
     private readonly s3Client: S3Client,
   ) {}
 
-  async uploadPetImage(petId: string, image: Express.Multer.File) {
+  async uploadPetImage(image: Express.Multer.File, imageKey: string) {
     const command = new PutObjectCommand({
       Bucket: this.configService.get('AWS_BUCKET_NAME'),
-      Key: `pets/${petId}.${image.originalname.split('.').pop()}`,
+      Key: `pets/${imageKey}`,
       Body: image.buffer,
       ContentType: image.mimetype,
     });
@@ -20,7 +24,30 @@ export class AwsService {
     return this.s3Client.send(command);
   }
 
-  getPetImageUrl(petId: string, imageExt: string) {
-    return `${this.configService.get('AWS_CLOUDFRONT_URL')}/pets/${petId}.${imageExt}`;
+  getPetImageUrl(key: string) {
+    return `${this.configService.get('AWS_CLOUDFRONT_URL')}/pets/${key}`;
+  }
+
+  async deletePetImage(key: string) {
+    const command = new DeleteObjectCommand({
+      Bucket: this.configService.get('AWS_BUCKET_NAME'),
+      Key: `pets/${key}`,
+    });
+
+    return this.s3Client.send(command);
+  }
+
+  async updatePetImage({
+    image,
+    beforeImageKey,
+    afterImageKey,
+  }: {
+    image: Express.Multer.File;
+    beforeImageKey: string;
+    afterImageKey: string;
+  }) {
+    this.deletePetImage(beforeImageKey);
+    this.uploadPetImage(image, afterImageKey);
+    return;
   }
 }

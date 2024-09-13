@@ -15,16 +15,13 @@ export class PetRepository {
       birthday: Date;
       heartwormPrevention: boolean;
       description: string;
-      imageExt: string;
+      image: string;
     },
   ) {
     return this.prisma.pet.create({
       data: {
         ...petData,
         ownerId: userId,
-      },
-      select: {
-        id: true,
       },
     });
   }
@@ -38,7 +35,7 @@ export class PetRepository {
         id: true,
         name: true,
         type: true,
-        imageExt: true,
+        image: true,
       },
     });
   }
@@ -56,7 +53,7 @@ export class PetRepository {
         birthday: true,
         heartwormPrevention: true,
         description: true,
-        imageExt: true,
+        image: true,
         ownerId: true,
       },
     });
@@ -65,5 +62,27 @@ export class PetRepository {
       throw new HttpException('Pet not found', 404);
     }
     return pet;
+  }
+
+  async updateImageAndReturnPreviousImage(petId: string, image: string) {
+    const [beforePet] = await this.prisma.$transaction([
+      this.prisma.pet.findUniqueOrThrow({
+        where: {
+          id: petId,
+        },
+        select: {
+          image: true,
+        },
+      }),
+      this.prisma.pet.update({
+        where: {
+          id: petId,
+        },
+        data: {
+          image,
+        },
+      }),
+    ]);
+    return beforePet.image;
   }
 }

@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PetRepository } from 'src/repositories/pet.repository';
 import { AwsService } from 'src/aws/aws.service';
+import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class PetService {
@@ -27,33 +28,48 @@ export class PetService {
       console.log(image);
       throw new Error('Invalid image file');
     }
-    const { id: petId } = await this.petRepository.create(userId, {
+    const imageId = uuidv4();
+    const imageKey = `${imageId}.${imageExt}`;
+    const imageUrl = this.awsService.getPetImageUrl(imageKey);
+
+    await this.petRepository.create(userId, {
       ...rest,
-      imageExt,
+      image: imageUrl,
     });
-    await this.awsService.uploadPetImage(petId, image);
+    await this.awsService.uploadPetImage(image, imageKey);
     return;
   }
 
   async getManyByUserId(userId: string) {
-    const pets = await this.petRepository.findManyByOnwerId(userId);
-
-    return pets.map((pet) => {
-      return {
-        id: pet.id,
-        name: pet.name,
-        type: pet.type,
-        image: this.awsService.getPetImageUrl(pet.id, pet.imageExt),
-      };
-    });
+    return await this.petRepository.findManyByOnwerId(userId);
   }
 
   async getOneById(petId: string) {
-    const { imageExt, ...rest } = await this.petRepository.findOneById(petId);
+    return await this.petRepository.findOneById(petId);
+  }
 
-    return {
-      ...rest,
-      image: this.awsService.getPetImageUrl(petId, imageExt),
-    };
+  async updateImage(petId: string, image: Express.Multer.File) {
+    const imageExt = image.originalname.split('.').pop();
+    if (!imageExt) {
+      console.log(image);
+      throw new Error('Invalid image file');
+    }
+    const imageId = uuidv4();
+    const imageKey = `${imageId}.${imageExt}`;
+    const imageUrl = this.awsService.getPetImageUrl(imageKey);
+
+    const beforeImage =
+      await this.petRepository.updateImageAndReturnPreviousImage(
+        petId,
+        imageUrl,
+      );
+    const beforeImageKey = beforeImage.split('/').pop();
+
+    await this.awsService.updatePetImage({
+      image,
+      beforeImageKey: beforeImageKey!,
+      afterImageKey: imageKey,
+    });
+    return;
   }
 }

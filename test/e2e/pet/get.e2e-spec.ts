@@ -46,7 +46,7 @@ describe('GET /pets - 내 반려동물 리스트 조회', () => {
           birthday: new Date('2021-01-01'),
           heartwormPrevention: true,
           description: '테스트용 멍멍이',
-          imageExt: 'jpg',
+          image: 'test-image-url',
         },
         {
           ownerId: user!.id,
@@ -56,7 +56,7 @@ describe('GET /pets - 내 반려동물 리스트 조회', () => {
           birthday: new Date('2021-01-01'),
           heartwormPrevention: true,
           description: '테스트용 야옹이',
-          imageExt: 'jpg',
+          image: 'test-image-url',
         },
       ],
     });

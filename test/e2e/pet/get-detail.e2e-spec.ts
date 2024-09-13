@@ -58,7 +58,7 @@ describe('GET /pets/:petId - 반려동물 상세 조회', () => {
         birthday: new Date('2021-01-01'),
         heartwormPrevention: true,
         description: '테스트용 멍멍이',
-        imageExt: 'jpg',
+        image: 'https://test.com/image1.jpg',
       },
     });
 
@@ -77,7 +77,7 @@ describe('GET /pets/:petId - 반려동물 상세 조회', () => {
       birthday: '2021-01-01T00:00:00.000Z',
       heartwormPrevention: true,
       description: '테스트용 멍멍이',
-      image: `${process.env.AWS_CLOUDFRONT_URL}/pets/${pet.id}.${pet.imageExt}`,
+      image: `https://test.com/image1.jpg`,
       ownerId: user!.id,
     });
   });
