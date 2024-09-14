@@ -86,4 +86,13 @@ export class UserRepository {
 
     return user.refreshToken;
   }
+
+  async deleteById(id: string) {
+    await this.prisma.user.delete({
+      where: {
+        id,
+      },
+    });
+    return;
+  }
 }

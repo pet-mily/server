@@ -39,7 +39,7 @@ import {
 import { FileInterceptor } from '@nestjs/platform-express';
 import { CurrentUser } from 'src/common/decorators';
 
-@ApiTags('Pets')
+@ApiTags('pets')
 @ApiBearerAuth()
 @ApiResponse({ status: 401, description: 'accessToken 재발급해야함' })
 @ApiResponse({ status: 400, description: '유효성 검사 실패' })

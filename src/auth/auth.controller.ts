@@ -23,7 +23,7 @@ import {
 import { JwtGuard, RefreshGuard } from 'src/common/guards';
 import { CurrentUser } from 'src/common/decorators';
 
-@ApiTags('Auth')
+@ApiTags('auth')
 @ApiResponse({ status: 400, description: '유효성 검사 실패' })
 @Controller('auth')
 export class AuthController {
