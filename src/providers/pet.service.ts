@@ -11,20 +11,9 @@ export class PetService {
     private awsService: AwsService,
   ) {}
 
-  async create(
-    userId: string,
-    petData: {
-      type: 'CAT' | 'DOG';
-      name: string;
-      breed: string;
-      birthday: Date;
-      heartwormPrevention: boolean;
-      description: string;
-      image: Express.Multer.File;
-    },
-  ) {
-    const { image, ...rest } = petData;
-    const imageExt = petData.image.originalname.split('.').pop();
+  async create(userId: string, createInput: CreateInput) {
+    const { image, ...rest } = createInput;
+    const imageExt = image.originalname.split('.').pop();
     if (!imageExt) {
       console.log(image);
       throw new Error('Invalid image file');
@@ -51,6 +40,24 @@ export class PetService {
     return {
       ...pet,
       birthday: pet.birthday.toISOString().split('T')[0],
+      rabiesVaccinationDate: pet.rabiesVaccinationDate
+        ? pet.rabiesVaccinationDate.toISOString().split('T')[0]
+        : null,
+      comprehensiveVaccinationDate: pet.comprehensiveVaccinationDate
+        ? pet.comprehensiveVaccinationDate.toISOString().split('T')[0]
+        : null,
+      covidVaccinationDate: pet.covidVaccinationDate
+        ? pet.covidVaccinationDate.toISOString().split('T')[0]
+        : null,
+      kennelCoughVaccinationDate: pet.kennelCoughVaccinationDate
+        ? pet.kennelCoughVaccinationDate.toISOString().split('T')[0]
+        : null,
+      heartwormVaccinationDate: pet.heartwormVaccinationDate
+        ? pet.heartwormVaccinationDate.toISOString().split('T')[0]
+        : null,
+      externalParasiteVaccination: pet.externalParasiteVaccination
+        ? pet.externalParasiteVaccination.toISOString().split('T')[0]
+        : null,
     };
   }
 
@@ -101,13 +108,39 @@ export class PetService {
   }
 }
 
+export interface CreateInput {
+  type: 'CAT' | 'DOG';
+  name: string;
+  gender: 'MALE' | 'FEMAIL';
+  breed: string | null;
+  birthday: Date;
+  weight: number;
+  neutered: boolean;
+  rabiesVaccinationDate: Date | null;
+  comprehensiveVaccinationDate: Date | null;
+  covidVaccinationDate: Date | null;
+  kennelCoughVaccinationDate: Date | null;
+  heartwormVaccinationDate: Date | null;
+  externalParasiteVaccination: Date | null;
+  description: string;
+  image: Express.Multer.File;
+}
+
 export interface UpdateInput {
   userId: string;
   petId: string;
   type: 'CAT' | 'DOG';
   name: string;
-  breed: string;
+  gender: 'MALE' | 'FEMAIL';
+  breed: string | null;
   birthday: Date;
-  heartwormPrevention: boolean;
+  weight: number;
+  neutered: boolean;
+  rabiesVaccinationDate: Date | null;
+  comprehensiveVaccinationDate: Date | null;
+  covidVaccinationDate: Date | null;
+  kennelCoughVaccinationDate: Date | null;
+  heartwormVaccinationDate: Date | null;
+  externalParasiteVaccination: Date | null;
   description: string;
 }

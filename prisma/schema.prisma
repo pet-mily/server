@@ -30,7 +30,7 @@ model Pet {
   breed                        String?
   birthday                     DateTime  @db.Date
   weight                       Float
-  spayedNeutered               Boolean
+  neutered                     Boolean
   rabiesVaccinationDate        DateTime? @db.Date
   comprehensiveVaccinationDate DateTime? @db.Date
   covidVaccinationDate         DateTime? @db.Date

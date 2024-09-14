@@ -6,21 +6,10 @@ import { HttpException } from '@nestjs/common';
 export class PetRepository {
   constructor(private prisma: PrismaService) {}
 
-  async create(
-    userId: string,
-    petData: {
-      type: 'CAT' | 'DOG';
-      name: string;
-      breed: string;
-      birthday: Date;
-      heartwormPrevention: boolean;
-      description: string;
-      image: string;
-    },
-  ) {
+  async create(userId: string, createInput: CreateInput) {
     return this.prisma.pet.create({
       data: {
-        ...petData,
+        ...createInput,
         ownerId: userId,
       },
     });
@@ -47,11 +36,19 @@ export class PetRepository {
       },
       select: {
         id: true,
-        name: true,
         type: true,
+        name: true,
+        gender: true,
         breed: true,
         birthday: true,
-        heartwormPrevention: true,
+        weight: true,
+        neutered: true,
+        rabiesVaccinationDate: true,
+        comprehensiveVaccinationDate: true,
+        covidVaccinationDate: true,
+        kennelCoughVaccinationDate: true,
+        heartwormVaccinationDate: true,
+        externalParasiteVaccination: true,
         description: true,
         image: true,
         ownerId: true,
@@ -87,18 +84,14 @@ export class PetRepository {
   }
 
   async update(updateInput: UpdateInput) {
+    const { userId, petId, ...data } = updateInput;
     await this.prisma.pet.update({
       where: {
-        id: updateInput.petId,
-        ownerId: updateInput.userId,
+        id: petId,
+        ownerId: userId,
       },
       data: {
-        type: updateInput.type,
-        name: updateInput.name,
-        breed: updateInput.breed,
-        birthday: updateInput.birthday,
-        heartwormPrevention: updateInput.heartwormPrevention,
-        description: updateInput.description,
+        ...data,
       },
     });
 
@@ -119,13 +112,39 @@ export class PetRepository {
   }
 }
 
+export interface CreateInput {
+  type: 'CAT' | 'DOG';
+  name: string;
+  gender: 'MALE' | 'FEMAIL';
+  breed: string | null;
+  birthday: Date;
+  weight: number;
+  neutered: boolean;
+  rabiesVaccinationDate: Date | null;
+  comprehensiveVaccinationDate: Date | null;
+  covidVaccinationDate: Date | null;
+  kennelCoughVaccinationDate: Date | null;
+  heartwormVaccinationDate: Date | null;
+  externalParasiteVaccination: Date | null;
+  description: string;
+  image: string;
+}
+
 export interface UpdateInput {
   userId: string;
   petId: string;
   type: 'CAT' | 'DOG';
   name: string;
-  breed: string;
+  gender: 'MALE' | 'FEMAIL';
+  breed: string | null;
   birthday: Date;
-  heartwormPrevention: boolean;
+  weight: number;
+  neutered: boolean;
+  rabiesVaccinationDate: Date | null;
+  comprehensiveVaccinationDate: Date | null;
+  covidVaccinationDate: Date | null;
+  kennelCoughVaccinationDate: Date | null;
+  heartwormVaccinationDate: Date | null;
+  externalParasiteVaccination: Date | null;
   description: string;
 }

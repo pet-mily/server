@@ -42,27 +42,6 @@ describe('POST /pets - 반려동물 등록', () => {
     await prisma.user.deleteMany();
   });
 
-  it('이미지가 없을때 400을 반환한다', async () => {
-    // given
-    const { accessToken } = await signup(app);
-
-    // when
-    const { status } = await request(app.getHttpServer())
-      .post('/pets')
-      .set('Authorization', `Bearer ${accessToken}`)
-      .send({
-        type: 'DOG',
-        name: '멍멍이',
-        breed: '푸들',
-        birthday: '2021-01-01',
-        heartwormPrevention: true,
-        description: '테스트용 멍멍이',
-      });
-
-    // then
-    expect(status).toBe(400);
-  });
-
   it('type이 DOG나 CAT이 아닐때 400을 반환한다', async () => {
     // given
     const { accessToken } = await signup(app);
@@ -76,9 +55,17 @@ describe('POST /pets - 반려동물 등록', () => {
       .attach('image', filePath)
       .field('type', 'INVALID')
       .field('name', '멍멍이')
-      .field('breed', '푸들')
+      .field('gender', 'male')
+      .field('breed', '골대더')
       .field('birthday', '2021-01-01')
-      .field('heartwormPrevention', true)
+      .field('weight', '5')
+      .field('neutered', true)
+      .field('rabiesVaccinationDate', '2021-01-01')
+      .field('comprehensiveVaccinationDate', '2021-01-01')
+      .field('covidVaccinationDate', '2021-01-01')
+      .field('kennelCoughVaccinationDate', '2021-01-01')
+      .field('heartwormVaccinationDate', '2021-01-01')
+      .field('externalParasiteVaccination', '2021-01-01')
       .field('description', '테스트용 멍멍이');
 
     // then
@@ -99,29 +86,94 @@ describe('POST /pets - 반려동물 등록', () => {
       .post('/pets')
       .set('Authorization', `Bearer ${accessToken}`)
       .attach('image', filePath)
-      .field('type', 'DOG')
-      .field('breed', '푸들')
-      .field('birthday', '2021-01-01')
-      .field('heartwormPrevention', true)
-      .field('description', '테스트용 멍멍이');
-
-    const { status: status2 } = await request(app.getHttpServer())
-      .post('/pets')
-      .set('Authorization', `Bearer ${accessToken}`)
-      .attach('image', filePath)
-      .field('type', 'DOG')
+      .field('type', 'dog')
       .field('name', '')
-      .field('breed', '푸들')
+      .field('gender', 'male')
+      .field('breed', '골대더')
       .field('birthday', '2021-01-01')
-      .field('heartwormPrevention', true)
+      .field('weight', '5')
+      .field('neutered', true)
+      .field('rabiesVaccinationDate', '2021-01-01')
+      .field('comprehensiveVaccinationDate', '2021-01-01')
+      .field('covidVaccinationDate', '2021-01-01')
+      .field('kennelCoughVaccinationDate', '2021-01-01')
+      .field('heartwormVaccinationDate', '2021-01-01')
+      .field('externalParasiteVaccination', '2021-01-01')
       .field('description', '테스트용 멍멍이');
 
     // then
     expect(status).toBe(400);
-    expect(status2).toBe(400);
 
     // cleanup
     fs.unlinkSync(filePath);
+  });
+
+  it('gender가 male이나 female이 아닐때 400을 반환한다', async () => {
+    // given
+    const { accessToken } = await signup(app);
+    const filePath = path.join(__dirname, 'test.png');
+    fs.writeFileSync(filePath, 'test-png');
+
+    // when
+    const { status } = await request(app.getHttpServer())
+      .post('/pets')
+      .set('Authorization', `Bearer ${accessToken}`)
+      .attach('image', filePath)
+      .field('type', 'dog')
+      .field('name', 'test-name')
+      .field('gender', 'invalid')
+      .field('breed', '골대더')
+      .field('birthday', '2021-01-01')
+      .field('weight', '5')
+      .field('neutered', true)
+      .field('rabiesVaccinationDate', '2021-01-01')
+      .field('comprehensiveVaccinationDate', '2021-01-01')
+      .field('covidVaccinationDate', '2021-01-01')
+      .field('kennelCoughVaccinationDate', '2021-01-01')
+      .field('heartwormVaccinationDate', '2021-01-01')
+      .field('externalParasiteVaccination', '2021-01-01')
+      .field('description', '테스트용 멍멍이');
+
+    // then
+    expect(status).toBe(400);
+
+    // cleanup
+    fs.unlinkSync(filePath);
+  });
+
+  it('breed는 null이어도 201을 반환한다', async () => {
+    // given
+    const { accessToken } = await signup(app);
+    const filePath = path.join(__dirname, 'test.png');
+    fs.writeFileSync(filePath, 'test-png');
+    const spy = jest.spyOn(petService, 'create').mockResolvedValue();
+
+    // when
+    const { status } = await request(app.getHttpServer())
+      .post('/pets')
+      .set('Authorization', `Bearer ${accessToken}`)
+      .attach('image', filePath)
+      .field('type', 'dog')
+      .field('name', 'test-name')
+      .field('gender', 'male')
+      .field('breed', 'null')
+      .field('birthday', '2021-01-01')
+      .field('weight', '5')
+      .field('neutered', true)
+      .field('rabiesVaccinationDate', '2021-01-01')
+      .field('comprehensiveVaccinationDate', '2021-01-01')
+      .field('covidVaccinationDate', '2021-01-01')
+      .field('kennelCoughVaccinationDate', '2021-01-01')
+      .field('heartwormVaccinationDate', '2021-01-01')
+      .field('externalParasiteVaccination', '2021-01-01')
+      .field('description', '테스트용 멍멍이');
+
+    // then
+    expect(status).toBe(201);
+
+    // cleanup
+    fs.unlinkSync(filePath);
+    spy.mockRestore();
   });
 
   it('birthday가 날짜 형식이 아닐때 400을 반환한다', async () => {
@@ -135,13 +187,20 @@ describe('POST /pets - 반려동물 등록', () => {
       .post('/pets')
       .set('Authorization', `Bearer ${accessToken}`)
       .attach('image', filePath)
-      .field('type', 'DOG')
-      .field('name', '멍멍이')
-      .field('breed', '푸들')
-      .field('birthday', 'INVALID')
-      .field('heartwormPrevention', true)
+      .field('type', 'dog')
+      .field('name', 'test-name')
+      .field('gender', 'male')
+      .field('breed', 'null')
+      .field('birthday', 'invalid')
+      .field('weight', '5')
+      .field('neutered', true)
+      .field('rabiesVaccinationDate', '2021-01-01')
+      .field('comprehensiveVaccinationDate', '2021-01-01')
+      .field('covidVaccinationDate', '2021-01-01')
+      .field('kennelCoughVaccinationDate', '2021-01-01')
+      .field('heartwormVaccinationDate', '2021-01-01')
+      .field('externalParasiteVaccination', '2021-01-01')
       .field('description', '테스트용 멍멍이');
-
     // then
     expect(status).toBe(400);
 
@@ -149,7 +208,7 @@ describe('POST /pets - 반려동물 등록', () => {
     fs.unlinkSync(filePath);
   });
 
-  it('heartwormPrevention이 boolean 형식이 아닐때 400을 반환한다', async () => {
+  it('weight가 숫자 형식이 아닐때 400을 반환한다', async () => {
     // given
     const { accessToken } = await signup(app);
     const filePath = path.join(__dirname, 'test.png');
@@ -160,11 +219,19 @@ describe('POST /pets - 반려동물 등록', () => {
       .post('/pets')
       .set('Authorization', `Bearer ${accessToken}`)
       .attach('image', filePath)
-      .field('type', 'DOG')
-      .field('name', '멍멍이')
-      .field('breed', '푸들')
+      .field('type', 'dog')
+      .field('name', 'test-name')
+      .field('gender', 'male')
+      .field('breed', 'null')
       .field('birthday', '2021-01-01')
-      .field('heartwormPrevention', 'INVALID')
+      .field('weight', 'invalid')
+      .field('neutered', true)
+      .field('rabiesVaccinationDate', '2021-01-01')
+      .field('comprehensiveVaccinationDate', '2021-01-01')
+      .field('covidVaccinationDate', '2021-01-01')
+      .field('kennelCoughVaccinationDate', '2021-01-01')
+      .field('heartwormVaccinationDate', '2021-01-01')
+      .field('externalParasiteVaccination', '2021-01-01')
       .field('description', '테스트용 멍멍이');
 
     // then
@@ -172,6 +239,74 @@ describe('POST /pets - 반려동물 등록', () => {
 
     // cleanup
     fs.unlinkSync(filePath);
+  });
+
+  it('neutered가 boolean 형식이 아닐때 400을 반환한다', async () => {
+    // given
+    const { accessToken } = await signup(app);
+    const filePath = path.join(__dirname, 'test.png');
+    fs.writeFileSync(filePath, 'test-png');
+
+    // when
+    const { status } = await request(app.getHttpServer())
+      .post('/pets')
+      .set('Authorization', `Bearer ${accessToken}`)
+      .attach('image', filePath)
+      .field('type', 'dog')
+      .field('name', 'test-name')
+      .field('gender', 'male')
+      .field('breed', 'null')
+      .field('birthday', '2021-01-01')
+      .field('weight', '5')
+      .field('neutered', 'invalid')
+      .field('rabiesVaccinationDate', '2021-01-01')
+      .field('comprehensiveVaccinationDate', '2021-01-01')
+      .field('covidVaccinationDate', '2021-01-01')
+      .field('kennelCoughVaccinationDate', '2021-01-01')
+      .field('heartwormVaccinationDate', '2021-01-01')
+      .field('externalParasiteVaccination', '2021-01-01')
+      .field('description', '테스트용 멍멍이');
+
+    // then
+    expect(status).toBe(400);
+
+    // cleanup
+    fs.unlinkSync(filePath);
+  });
+
+  it('rabiesVaccinationDate는 null이어도 201을 반환한다', async () => {
+    // given
+    const { accessToken } = await signup(app);
+    const filePath = path.join(__dirname, 'test.png');
+    fs.writeFileSync(filePath, 'test-png');
+    const spy = jest.spyOn(petService, 'create').mockResolvedValue();
+
+    // when
+    const { status } = await request(app.getHttpServer())
+      .post('/pets')
+      .set('Authorization', `Bearer ${accessToken}`)
+      .attach('image', filePath)
+      .field('type', 'dog')
+      .field('name', 'test-name')
+      .field('gender', 'male')
+      .field('breed', 'null')
+      .field('birthday', '2021-01-01')
+      .field('weight', '5')
+      .field('neutered', true)
+      .field('rabiesVaccinationDate', 'null')
+      .field('comprehensiveVaccinationDate', '2021-01-01')
+      .field('covidVaccinationDate', '2021-01-01')
+      .field('kennelCoughVaccinationDate', '2021-01-01')
+      .field('heartwormVaccinationDate', '2021-01-01')
+      .field('externalParasiteVaccination', '2021-01-01')
+      .field('description', '테스트용 멍멍이');
+
+    // then
+    expect(status).toBe(201);
+
+    // cleanup
+    fs.unlinkSync(filePath);
+    spy.mockRestore();
   });
 
   it('description은 공백이어도 201을 반환한다', async () => {
@@ -186,11 +321,19 @@ describe('POST /pets - 반려동물 등록', () => {
       .post('/pets')
       .set('Authorization', `Bearer ${accessToken}`)
       .attach('image', filePath)
-      .field('type', 'DOG')
-      .field('name', '멍멍이')
-      .field('breed', '푸들')
+      .field('type', 'dog')
+      .field('name', 'test-name')
+      .field('gender', 'male')
+      .field('breed', 'null')
       .field('birthday', '2021-01-01')
-      .field('heartwormPrevention', true)
+      .field('weight', '5')
+      .field('neutered', true)
+      .field('rabiesVaccinationDate', 'null')
+      .field('comprehensiveVaccinationDate', '2021-01-01')
+      .field('covidVaccinationDate', '2021-01-01')
+      .field('kennelCoughVaccinationDate', '2021-01-01')
+      .field('heartwormVaccinationDate', '2021-01-01')
+      .field('externalParasiteVaccination', '2021-01-01')
       .field('description', '');
 
     // then
@@ -199,6 +342,33 @@ describe('POST /pets - 반려동물 등록', () => {
     // cleanup
     fs.unlinkSync(filePath);
     spy.mockRestore();
+  });
+
+  it('이미지가 없을때 400을 반환한다', async () => {
+    // given
+    const { accessToken } = await signup(app);
+
+    // when
+    const { status } = await request(app.getHttpServer())
+      .post('/pets')
+      .set('Authorization', `Bearer ${accessToken}`)
+      .field('type', 'dog')
+      .field('name', 'test-name')
+      .field('gender', 'male')
+      .field('breed', 'null')
+      .field('birthday', '2021-01-01')
+      .field('weight', '5')
+      .field('neutered', true)
+      .field('rabiesVaccinationDate', 'null')
+      .field('comprehensiveVaccinationDate', '2021-01-01')
+      .field('covidVaccinationDate', '2021-01-01')
+      .field('kennelCoughVaccinationDate', '2021-01-01')
+      .field('heartwormVaccinationDate', '2021-01-01')
+      .field('externalParasiteVaccination', '2021-01-01')
+      .field('description', '');
+
+    // then
+    expect(status).toBe(400);
   });
 
   it('정상적인 요청일때 201을 반환한다', async () => {
@@ -212,12 +382,20 @@ describe('POST /pets - 반려동물 등록', () => {
       .post('/pets')
       .set('Authorization', `Bearer ${accessToken}`)
       .attach('image', filePath)
-      .field('type', 'DOG')
-      .field('name', '멍멍이')
-      .field('breed', '푸들')
+      .field('type', 'dog')
+      .field('name', 'test-name')
+      .field('gender', 'male')
+      .field('breed', 'null')
       .field('birthday', '2021-01-01')
-      .field('heartwormPrevention', true)
-      .field('description', '테스트용 멍멍이');
+      .field('weight', '5.2')
+      .field('neutered', true)
+      .field('rabiesVaccinationDate', 'null')
+      .field('comprehensiveVaccinationDate', '2021-01-01')
+      .field('covidVaccinationDate', '2021-01-01')
+      .field('kennelCoughVaccinationDate', '2021-01-01')
+      .field('heartwormVaccinationDate', '2021-01-01')
+      .field('externalParasiteVaccination', '2021-01-01')
+      .field('description', '');
 
     // then
     expect(status).toBe(201);

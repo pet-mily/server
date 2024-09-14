@@ -49,7 +49,6 @@ export class PetController {
   constructor(private petService: PetService) {}
 
   @ApiOperation({ summary: '반려동물 등록' })
-  @ApiConsumes('multipart/form-data')
   @ApiBody({
     type: CreatePetDto,
     description: '반려동물 등록',
@@ -63,13 +62,13 @@ export class PetController {
   async create(
     @Body() createPetDto: CreatePetDto,
     @UploadedFile() image: Express.Multer.File,
-    @CurrentUser() userId: number,
+    @CurrentUser() userId: string,
   ) {
     if (!image) {
-      throw new HttpException('Bad Request', 400);
+      throw new HttpException('이미지가 없습니당', 400);
     }
 
-    await this.petService.create(userId.toString(), {
+    await this.petService.create(userId, {
       ...createPetDto,
       image,
     });

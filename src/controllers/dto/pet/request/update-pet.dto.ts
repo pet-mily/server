@@ -6,7 +6,14 @@ import {
   IsNotEmpty,
   IsDate,
   IsBoolean,
+  IsNumber,
 } from 'class-validator';
+import {
+  IsNullableString,
+  IsNullableDate,
+  TransformNullableDate,
+  TransformNullableString,
+} from '../../helpers';
 
 export class UpdatePetDto {
   @ApiProperty({ enum: ['DOG', 'CAT'] })
@@ -19,22 +26,83 @@ export class UpdatePetDto {
   @IsNotEmpty()
   readonly name: string;
 
-  @ApiProperty({ description: '품종' })
-  @IsString()
-  @IsNotEmpty()
-  readonly breed: string;
+  @ApiProperty({ enum: ['MALE', 'FEMAIL'] })
+  @Transform(({ value }) => value.toUpperCase())
+  @IsEnum(['MALE', 'FEMAIL'], {
+    message: 'gender must be MALE or FEMAIL',
+  })
+  readonly gender: 'MALE' | 'FEMAIL';
+
+  @ApiProperty({
+    description: '품종 - 모르겠음 일때는 null로 보내주세요',
+    nullable: true,
+  })
+  @TransformNullableString()
+  @IsNullableString()
+  readonly breed: string | null;
 
   @ApiProperty({ description: '생일 YYYY-MM-DD', example: '2021-01-01' })
-  @Transform(({ value }) => new Date(value))
   @IsDate()
   birthday: Date;
 
-  @ApiProperty({ description: '심장사상충 접종 여부 - true or false' })
+  @ApiProperty({ description: '몸무게 - Int, Float 다 가능' })
+  @IsNumber()
+  weight: number;
+
+  @ApiProperty({ description: '중성화 여부 - true or false' })
   @Transform(({ obj, key }) => {
     return obj[key] === 'true' ? true : obj[key] === 'false' ? false : obj[key];
   })
   @IsBoolean()
-  heartwormPrevention: boolean;
+  neutered: boolean;
+
+  @ApiProperty({
+    description: '광견병 예방접종 일자 YYYY-MM-DD',
+    nullable: true,
+  })
+  @TransformNullableDate()
+  @IsNullableDate()
+  rabiesVaccinationDate: Date | null;
+
+  @ApiProperty({
+    description: '종합백신 예방접종 일자 YYYY-MM-DD',
+    nullable: true,
+  })
+  @TransformNullableDate()
+  @IsNullableDate()
+  comprehensiveVaccinationDate: Date | null;
+
+  @ApiProperty({
+    description: '코로나 예방접종 일자 YYYY-MM-DD',
+    nullable: true,
+  })
+  @TransformNullableDate()
+  @IsNullableDate()
+  covidVaccinationDate: Date | null;
+
+  @ApiProperty({
+    description: '켄넬코프 예방접종 일자 YYYY-MM-DD',
+    nullable: true,
+  })
+  @TransformNullableDate()
+  @IsNullableDate()
+  kennelCoughVaccinationDate: Date | null;
+
+  @ApiProperty({
+    description: '심장사상충 예방접종 일자 YYYY-MM-DD',
+    nullable: true,
+  })
+  @TransformNullableDate()
+  @IsNullableDate()
+  heartwormVaccinationDate: Date | null;
+
+  @ApiProperty({
+    description: '외부기생충 예방접종 일자 YYYY-MM-DD',
+    nullable: true,
+  })
+  @TransformNullableDate()
+  @IsNullableDate()
+  externalParasiteVaccination: Date | null;
 
   @ApiProperty({ description: '펫 설명, 공백으로 주셔도 됩니다' })
   @IsString()
