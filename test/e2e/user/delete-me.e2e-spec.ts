@@ -6,7 +6,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { AuthService } from 'src/auth/auth.service';
 import { signup } from '../helpers';
 
-describe('DELETE /auth - 회원탈퇴', () => {
+describe('DELETE /users/me - 회원탈퇴', () => {
   let app: INestApplication;
   let prisma: PrismaService;
   let authService: AuthService;
@@ -38,7 +38,7 @@ describe('DELETE /auth - 회원탈퇴', () => {
 
     // when
     const response = await request(app.getHttpServer())
-      .delete('/users')
+      .delete('/users/me')
       .set('Authorization', `Bearer ${accessToken}`);
 
     // then
@@ -68,7 +68,7 @@ describe('DELETE /auth - 회원탈퇴', () => {
 
     // when
     const response = await request(app.getHttpServer())
-      .delete('/users')
+      .delete('/users/me')
       .set('Authorization', `Bearer ${accessToken}`);
 
     // then
