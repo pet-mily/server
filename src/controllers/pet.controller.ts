@@ -12,6 +12,7 @@ import {
   Put,
   HttpCode,
   Delete,
+  Query,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -28,6 +29,7 @@ import {
   CreatePetDto,
   UpdatePetImageDto,
   UpdatePetDto,
+  GetBreedsDto,
 } from './dto/pet/request';
 import {
   FindManyPetDto,
@@ -84,6 +86,19 @@ export class PetController {
   @Get()
   async findManyByUserId(@CurrentUser() id: string): Promise<FindManyPetDto[]> {
     return this.petService.getManyByUserId(id);
+  }
+
+  @ApiOperation({ description: '품종 리스트 조회' })
+  @ApiParam({ name: 'type', enum: ['DOG', 'CAT'] })
+  @ApiResponse({
+    status: 200,
+    description: '품종 리스트 조회 성공',
+    type: String,
+    isArray: true,
+  })
+  @Get('breeds')
+  getBreeds(@Query() { type }: GetBreedsDto) {
+    return this.petService.getBreeds(type);
   }
 
   @ApiOperation({ summary: '반려동물 상세 조회' })

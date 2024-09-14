@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { PetRepository } from 'src/repositories/pet.repository';
 import { AwsService } from 'src/aws/aws.service';
 import { v4 as uuidv4 } from 'uuid';
+import { catBreeds, dogBreeds } from 'src/constants';
 
 @Injectable()
 export class PetService {
@@ -90,6 +91,13 @@ export class PetService {
     const imageKey = image.split('/').pop();
     await this.awsService.deletePetImage(imageKey!);
     return;
+  }
+
+  getBreeds(type: 'CAT' | 'DOG') {
+    if (type === 'CAT') {
+      return catBreeds;
+    }
+    return dogBreeds;
   }
 }
 
