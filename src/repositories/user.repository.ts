@@ -95,4 +95,22 @@ export class UserRepository {
     });
     return;
   }
+
+  async update(
+    id: string,
+    data: {
+      name: string;
+      phoneNumber: string;
+      address: string | null;
+      detailAddress: string | null;
+    },
+  ) {
+    await this.prisma.user.update({
+      where: {
+        id,
+      },
+      data,
+    });
+    return;
+  }
 }

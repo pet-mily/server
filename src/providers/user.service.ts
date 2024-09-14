@@ -9,4 +9,17 @@ export class UserService {
     await this.userRepository.deleteById(userId);
     return;
   }
+
+  async update(
+    userId: string,
+    updateUserInput: {
+      name: string;
+      phoneNumber: string;
+      address: string | null;
+      detailAddress: string | null;
+    },
+  ) {
+    await this.userRepository.update(userId, updateUserInput);
+    return;
+  }
 }
