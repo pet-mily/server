@@ -23,14 +23,22 @@ model User {
 }
 
 model Pet {
-  id                  String   @id @default(uuid())
-  name                String
-  type                String
-  breed               String
-  birthday            DateTime @db.Date
-  heartwormPrevention Boolean
-  description         String
-  image               String
+  id                           String    @id @default(uuid())
+  type                         String
+  name                         String
+  gender                       String
+  breed                        String?
+  birthday                     DateTime  @db.Date
+  weight                       Float
+  spayedNeutered               Boolean
+  rabiesVaccinationDate        DateTime? @db.Date
+  comprehensiveVaccinationDate DateTime? @db.Date
+  covidVaccinationDate         DateTime? @db.Date
+  kennelCoughVaccinationDate   DateTime? @db.Date
+  heartwormVaccinationDate     DateTime? @db.Date
+  externalParasiteVaccination  DateTime? @db.Date
+  description                  String
+  image                        String
 
   ownerId String
   owner   User   @relation(fields: [ownerId], references: [id])
