@@ -75,6 +75,8 @@ describe('POST /auth/login - 로그인', () => {
       data: {
         provider: 'KAKAO',
         providerId: 'test-id',
+        name: 'test-name',
+        phoneNumber: '01012345678',
       },
     });
 

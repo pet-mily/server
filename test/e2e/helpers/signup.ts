@@ -5,6 +5,8 @@ export const signup = async (app: INestApplication) => {
   const signupDto = {
     provider: 'KAKAO',
     providerAccessToken: 'test-oauth-token',
+    name: 'test-name',
+    phoneNumber: '01012345678',
   };
 
   const { body } = await request(app.getHttpServer())

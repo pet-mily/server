@@ -61,6 +61,8 @@ describe('PATCH /auth/refresh - 토큰 재발급', () => {
     } = await request(app.getHttpServer()).post('/auth/signup').send({
       provider: 'KAKAO',
       providerAccessToken: 'test-token',
+      name: 'test-name',
+      phoneNumber: '01012345678',
     });
 
     // when

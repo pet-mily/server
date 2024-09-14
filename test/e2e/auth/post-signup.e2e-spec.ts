@@ -29,7 +29,7 @@ describe('POST /auth/signup - 회원가입', () => {
   it('provider가 kakao, naver가 아닌 경우 400을 반환한다', async () => {
     // when
     const { status } = await request(app.getHttpServer())
-      .post('/auth/login')
+      .post('/auth/signup')
       .send({
         provider: 'google',
         providerAccesstoken: 'test-token',
@@ -42,10 +42,40 @@ describe('POST /auth/signup - 회원가입', () => {
   it('providerAccessToken이 없는 경우 400을 반환한다', async () => {
     // when
     const { status } = await request(app.getHttpServer())
-      .post('/auth/login')
+      .post('/auth/signup')
       .send({
         provider: 'KAKAO',
         providerAccessToken: '',
+      });
+
+    // then
+    expect(status).toBe(400);
+  });
+
+  it('name이 없는 경우 400을 반환한다', async () => {
+    // when
+    const { status } = await request(app.getHttpServer())
+      .post('/auth/signup')
+      .send({
+        provider: 'KAKAO',
+        providerAccessToken: 'test',
+        name: '',
+        phoneNumber: '01012345678',
+      });
+
+    // then
+    expect(status).toBe(400);
+  });
+
+  it('phoneNumber가 없는 경우 400을 반환한다', async () => {
+    // when
+    const { status } = await request(app.getHttpServer())
+      .post('/auth/signup')
+      .send({
+        provider: 'KAKAO',
+        providerAccessToken: 'test',
+        name: 'test-name',
+        phoneNumber: '',
       });
 
     // then
@@ -61,6 +91,8 @@ describe('POST /auth/signup - 회원가입', () => {
       data: {
         provider: 'KAKAO',
         providerId: 'test-provider-id',
+        name: 'test-name',
+        phoneNumber: '01012345678',
       },
     });
 
@@ -70,6 +102,8 @@ describe('POST /auth/signup - 회원가입', () => {
       .send({
         provider: 'KAKAO',
         providerAccessToken: 'test-token',
+        name: 'test-name',
+        phoneNumber: '01012345678',
       });
 
     // then
@@ -88,6 +122,8 @@ describe('POST /auth/signup - 회원가입', () => {
       .send({
         provider: 'KAKAO',
         providerAccessToken: 'test-token',
+        name: 'test-name',
+        phoneNumber: '01012345678',
       });
 
     // then
