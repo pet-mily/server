@@ -8,14 +8,16 @@ datasource db {
 }
 
 model User {
-  id           String   @id @default(uuid())
-  email        String?
-  provider     String
-  providerId   String
-  name         String
-  phoneNumber  String
-  createdAt    DateTime @default(now())
-  refreshToken String?
+  id            String   @id @default(uuid())
+  email         String?
+  provider      String
+  providerId    String
+  name          String
+  phoneNumber   String
+  address       String?
+  detailAddress String?
+  createdAt     DateTime @default(now())
+  refreshToken  String?
 
   pets Pet[]
 
