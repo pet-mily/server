@@ -12,6 +12,8 @@ model User {
   email        String?
   provider     String
   providerId   String
+  name         String
+  phoneNumber  String
   createdAt    DateTime @default(now())
   refreshToken String?
 
