@@ -22,12 +22,22 @@ export class UserRepository {
     return user;
   }
 
-  async createUser(provider: string, providerId: string) {
+  async createUser(createUserInput: {
+    provider: string;
+    providerId: string;
+    name: string;
+    phoneNumber: string;
+  }) {
     try {
       return await this.prisma.user.create({
         data: {
-          provider,
-          providerId,
+          provider: createUserInput.provider,
+          providerId: createUserInput.providerId,
+          name: createUserInput.name,
+          phoneNumber: createUserInput.phoneNumber,
+        },
+        select: {
+          id: true,
         },
       });
     } catch (e) {

@@ -9,7 +9,7 @@ import {
   Req,
 } from '@nestjs/common';
 import { Request } from 'express';
-import { LoginDto } from './dto/request';
+import { LoginDto, SignupDto } from './dto/request';
 import { LoginResponseDto } from './dto/response';
 import { AuthService } from './auth.service';
 import {
@@ -44,7 +44,7 @@ export class AuthController {
   }
 
   @ApiOperation({ summary: '회원가입' })
-  @ApiBody({ type: LoginDto })
+  @ApiBody({ type: SignupDto })
   @ApiResponse({
     status: 201,
     description: '회원가입 성공',
@@ -52,8 +52,8 @@ export class AuthController {
   })
   @ApiResponse({ status: 409, description: '유저 이미 존재' })
   @Post('signup')
-  async signup(@Body() loginDto: LoginDto): Promise<LoginResponseDto> {
-    return await this.authService.signup(loginDto);
+  async signup(@Body() signupDto: SignupDto): Promise<LoginResponseDto> {
+    return await this.authService.signup(signupDto);
   }
 
   @ApiOperation({ summary: '토큰 갱신' })

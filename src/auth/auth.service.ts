@@ -38,21 +38,25 @@ export class AuthService {
     };
   }
 
-  async signup({
-    provider,
-    providerAccessToken,
-  }: {
+  async signup(signupInput: {
     provider: 'KAKAO' | 'NAVER';
     providerAccessToken: string;
+    name: string;
+    phoneNumber: string;
   }) {
     let profile;
-    if (provider === 'KAKAO') {
-      profile = await this.getKakaoProfile(providerAccessToken);
+    if (signupInput.provider === 'KAKAO') {
+      profile = await this.getKakaoProfile(signupInput.providerAccessToken);
     } else {
-      profile = await this.getNaverProfile(providerAccessToken);
+      profile = await this.getNaverProfile(signupInput.providerAccessToken);
     }
 
-    const user = await this.userRepository.createUser(provider, profile.id);
+    const user = await this.userRepository.createUser({
+      provider: signupInput.provider,
+      providerId: profile.id,
+      name: signupInput.name,
+      phoneNumber: signupInput.phoneNumber,
+    });
     const accessToken = await this.createAccessToken(user.id);
     const refreshToken = await this.createRefreshToken(user.id);
 
