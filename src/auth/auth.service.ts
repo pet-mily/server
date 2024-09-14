@@ -125,4 +125,9 @@ export class AuthService {
       refreshToken: newRefreshToken,
     };
   }
+
+  async logout(userId: string) {
+    await this.userRepository.deleteRefreshToken(userId);
+    return;
+  }
 }

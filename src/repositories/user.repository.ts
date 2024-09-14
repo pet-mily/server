@@ -62,6 +62,18 @@ export class UserRepository {
     return;
   }
 
+  async deleteRefreshToken(userId: string) {
+    await this.prisma.user.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        refreshToken: null,
+      },
+    });
+    return;
+  }
+
   async findRefreshToken(userId: string) {
     const user = await this.prisma.user.findUniqueOrThrow({
       where: {

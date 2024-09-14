@@ -79,6 +79,18 @@ export class AuthController {
     return await this.authService.refresh(id, refreshToken);
   }
 
+  @ApiOperation({ summary: '로그아웃' })
+  @ApiResponse({ status: 204, description: '로그아웃 성공' })
+  @ApiResponse({ status: 401, description: 'accT 유효하지 않음' })
+  @ApiBearerAuth()
+  @UseGuards(JwtGuard)
+  @HttpCode(204)
+  @Post('logout')
+  async logout(@CurrentUser() id: string) {
+    await this.authService.logout(id);
+    return;
+  }
+
   @ApiBearerAuth()
   @UseGuards(JwtGuard)
   @Get('test')
